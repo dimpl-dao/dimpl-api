@@ -1,0 +1,2 @@
+class PurchaseAttempt < ApplicationRecord
+end
