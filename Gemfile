@@ -3,8 +3,8 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.7.0'
 
-gem 'rails', '~> 6.1.6'
-gem 'mysql2'
+gem 'rails', '~> 7.0'
+gem 'pg'
 gem 'puma', '~> 5.0'
 gem 'jbuilder', '~> 2.7'
 gem 'bcrypt', '~> 3.1.7'
@@ -20,6 +20,8 @@ gem 'grape'
 gem "mini_magick"
 gem 'bootsnap'
 gem 'kaminari'
+gem 'rack-cors'
+gem "net-http"
 
 
 group :development, :test do

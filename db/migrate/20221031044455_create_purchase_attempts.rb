@@ -1,15 +1,18 @@
-class CreatePurchaseAttempts < ActiveRecord::Migration[6.1]
+class CreatePurchaseAttempts < ActiveRecord::Migration[7.0]
   def change
-    create_table(:purchase_attempts, id: false) do |t|
-      t.string :hash, limit: 64, primary_key: true, null: false
+    create_table(:purchase_attempts) do |t|
+      t.binary :hash, limit: 32, null: false
       t.index :hash
-      t.decimal :deposit, precision: 27, scale: 18, null: false
-      t.references :user, type: :string, limit: 42, null: false, foreign_key: { to_table: :users, primary_key: :account }
-      t.references :listing, type: :string, limit: 64, null: false, foreign_key: { to_table: :listings, primary_key: :hash }
+      t.virtual :hash_hex, type: :string, as: "encode(hash, 'hex')", stored: true
+      t.numeric :deposit, precision: 78, null: false
+      t.numeric :created_block, precision: 39, scale: 0, null: false
+      t.references :user, type: :string, limit: 40, null: false, foreign_key: { to_table: :users, primary_key: :account }
+      t.references :listing
       t.integer :status, limit: 1, null: false, default: 0
       t.timestamps
     end
-    add_check_constraint :purchase_attempts, "hash RLIKE '^0x[a-f0-9]{64}$'", name: 'purchase_attempt_hash_constraint'
-    add_reference :listings, :purchase_attempt, type: :string, limit: 64, foreign_key: { to_table: :purchase_attempts, primary_key: :hash }
+    add_reference :listings, :purchase_attempt
+    add_check_constraint :purchase_attempts, "deposit > 0", name: 'purchase_attempts_deposit_unsigned_constraint'
+    add_check_constraint :purchase_attempts, "created_block >= 0", name: 'purchase_attempts_created_block_unsigned_constraint'
   end
 end

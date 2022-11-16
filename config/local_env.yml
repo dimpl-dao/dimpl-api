@@ -1,6 +1,0 @@
-DB_USERNAME: admin
-DB_PASSWORD: 8G9athZjtCKb1W3oWxTi
-RAILS_MAX_THREADS: 5
-DB_PORT: 3306
-DB_HOST: dbay-database.cuzymkaclxti.ap-northeast-2.rds.amazonaws.com
-DB_NAME: dBaydb

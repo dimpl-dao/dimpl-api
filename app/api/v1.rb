@@ -6,7 +6,7 @@ module V1
             return @current_user if @current_user
             if request.headers['Authorization']
                 jwt = request.headers['Authorization'].split(' ').last
-                @current_user = User.from_jwt(jwt)
+                @current_user = Auth::Authenticator.call(jwt)
                 return @current_user
             end
         end
