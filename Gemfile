@@ -22,7 +22,9 @@ gem 'bootsnap'
 gem 'kaminari'
 gem 'rack-cors'
 gem "net-http"
-
+gem 'faye-websocket'
+gem 'eventmachine'
+gem "eth"
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

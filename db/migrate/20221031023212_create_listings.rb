@@ -1,16 +1,14 @@
 class CreateListings < ActiveRecord::Migration[7.0]
   def change
-    create_table(:listings) do |t|
-      t.binary :hash, limit: 32
-      t.index :hash
-      t.virtual :hash_hex, type: :string, as: "encode(hash, 'hex')", stored: true
-      t.string :title, null: false
-      t.string :description, null: false
+    create_table(:listings, id: :uuid) do |t|
+      t.numeric :hash, precision: 78, scale: 0, unique: true
+      t.string :title
+      t.string :description
       t.numeric :price, precision: 78, scale: 0, null: false
       t.numeric :deposit, precision: 78, scale: 0, null: false
-      t.numeric :bid_selected_block, precision: 39, scale: 0, null: false, default: 0
+      t.numeric :bid_selected_block, precision: 39, scale: 0
       t.numeric :remonstrable_block_interval, precision: 39, scale: 0, null: false
-      t.references :user, type: :string, limit: 40, null: false, foreign_key: { to_table: :users, primary_key: :account }
+      t.references :user, type: :uuid
       t.integer :status, limit: 1, null: false, default: 0
       t.integer :likes_count, default: 0
       t.timestamps

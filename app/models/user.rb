@@ -1,9 +1,10 @@
 class User < ApplicationRecord
-    validates :account, account: true
+    validates :klaytn_address, evm_address: true
 
     def profile_dto
       return {
-        account: "0x" + account,
+        id: id,
+        klaytn_address: klaytn_address,
         username: username,
         created_at: created_at,
         updated_at: updated_at

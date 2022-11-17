@@ -2,7 +2,7 @@ module Auth
     class JwtCreator < ApplicationService
         def initialize(user)
             @payload = {
-                account: user.account,
+                klaytn_address: user.klaytn_address,
                 exp: 1.month.since.to_i
             }
         end

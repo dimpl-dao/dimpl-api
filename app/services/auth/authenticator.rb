@@ -8,7 +8,7 @@ module Auth
             begin
               payload = Jwt::Decoder.call(@jwt)
               return nil if payload[:exp] < Time.now.to_i
-              return User.find_by(account: payload[:account])
+              return User.find_by(klaytn_address: payload[:klaytn_address])
             rescue => e
               return nil
             end

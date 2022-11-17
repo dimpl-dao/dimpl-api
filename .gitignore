@@ -6,6 +6,8 @@
 
 /config/keys
 **/env.yml
+**/env.development.yml
+.DS_Store
 
 # Ignore bundler config.
 /.bundle

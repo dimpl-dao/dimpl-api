@@ -12,19 +12,19 @@ module V1
             end
 
             params do
-                requires :account, type: String, regexp: /^0x[a-fA-F0-9]{40}$/
+                requires :klaytn_address, type: String, regexp: /^0x[a-fA-F0-9]{40}$/
                 requires :request_key, type: String
                 requires :type, type: String, values: ['klip', 'kaikas']
             end
             put do
-                account = params[:account].downcase
+                klaytn_address = params[:klaytn_address].downcase
                 result = if params[:type] == 'klip'
                     Klip::ResultGetter.call(params[:request_key])
                 else
                     Kaikas::ResultGetter.call(params[:request_key])
                 end
-                if result && result[:klaytn_address].downcase == account
-                    user = User.find_or_create_by!(account: account[2..-1])
+                if result && result[:klaytn_address].downcase == klaytn_address
+                    user = User.find_or_create_by!(klaytn_address: klaytn_address[2..-1])
                     jwt = Auth::JwtCreator.call(user)
                     return {
                         success: true,

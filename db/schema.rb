@@ -49,7 +49,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_16_054359) do
     t.uuid "commentable_id"
     t.integer "comments_count", default: 0
     t.integer "likes_count", default: 0
-    t.string "user_id", limit: 40, null: false
+    t.uuid "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable"
@@ -59,29 +59,27 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_16_054359) do
   create_table "likes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "likable_type"
     t.uuid "likable_id"
-    t.string "user_id", limit: 40, null: false
+    t.uuid "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["likable_type", "likable_id"], name: "index_likes_on_likable"
     t.index ["user_id"], name: "index_likes_on_user_id"
   end
 
-  create_table "listings", force: :cascade do |t|
-    t.binary "hash"
-    t.virtual "hash_hex", type: :string, as: "encode(hash, 'hex'::text)", stored: true
-    t.string "title", null: false
-    t.string "description", null: false
+  create_table "listings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.decimal "hash", precision: 78
+    t.string "title"
+    t.string "description"
     t.decimal "price", precision: 78, null: false
     t.decimal "deposit", precision: 78, null: false
-    t.decimal "bid_selected_block", precision: 39, default: "0", null: false
+    t.decimal "bid_selected_block", precision: 39
     t.decimal "remonstrable_block_interval", precision: 39, null: false
-    t.string "user_id", limit: 40, null: false
+    t.uuid "user_id"
     t.integer "status", limit: 2, default: 0, null: false
     t.integer "likes_count", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "purchase_attempt_id"
-    t.index ["hash"], name: "index_listings_on_hash"
     t.index ["purchase_attempt_id"], name: "index_listings_on_purchase_attempt_id"
     t.index ["user_id"], name: "index_listings_on_user_id"
     t.check_constraint "deposit > 0::numeric", name: "listings_deposit_unsigned_constraint"
@@ -89,7 +87,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_16_054359) do
   end
 
   create_table "proposals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "user_id", limit: 40, null: false
+    t.uuid "user_id"
     t.text "content", null: false
     t.decimal "snapshot_id", precision: 78, null: false
     t.uuid "listing_id"
@@ -108,17 +106,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_16_054359) do
     t.check_constraint "snapshot_id >= 0::numeric", name: "proposals_snapshot_id_unsigned_constraint"
   end
 
-  create_table "purchase_attempts", force: :cascade do |t|
-    t.binary "hash", null: false
-    t.virtual "hash_hex", type: :string, as: "encode(hash, 'hex'::text)", stored: true
+  create_table "purchase_attempts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.decimal "hash", precision: 78
     t.decimal "deposit", precision: 78, null: false
     t.decimal "created_block", precision: 39, null: false
-    t.string "user_id", limit: 40, null: false
+    t.uuid "user_id"
     t.bigint "listing_id"
     t.integer "status", limit: 2, default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["hash"], name: "index_purchase_attempts_on_hash"
     t.index ["listing_id"], name: "index_purchase_attempts_on_listing_id"
     t.index ["user_id"], name: "index_purchase_attempts_on_user_id"
     t.check_constraint "created_block >= 0::numeric", name: "purchase_attempts_created_block_unsigned_constraint"
@@ -126,7 +122,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_16_054359) do
   end
 
   create_table "rebuttals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "user_id", limit: 40, null: false
+    t.uuid "user_id"
     t.text "content", null: false
     t.uuid "proposal_id"
     t.datetime "created_at", null: false
@@ -135,17 +131,18 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_16_054359) do
     t.index ["user_id"], name: "index_rebuttals_on_user_id"
   end
 
-  create_table "users", primary_key: "account", id: { type: :string, limit: 40 }, force: :cascade do |t|
+  create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "klaytn_address", limit: 40
     t.string "username"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["account"], name: "index_users_on_account"
+    t.index ["klaytn_address"], name: "index_users_on_klaytn_address"
   end
 
   create_table "votes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "proposal_id"
     t.integer "vote_type", limit: 2, null: false
-    t.string "user_id", limit: 40, null: false
+    t.uuid "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["proposal_id"], name: "index_votes_on_proposal_id"
@@ -155,11 +152,4 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_16_054359) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "comments", "users", primary_key: "account"
-  add_foreign_key "likes", "users", primary_key: "account"
-  add_foreign_key "listings", "users", primary_key: "account"
-  add_foreign_key "proposals", "users", primary_key: "account"
-  add_foreign_key "purchase_attempts", "users", primary_key: "account"
-  add_foreign_key "rebuttals", "users", primary_key: "account"
-  add_foreign_key "votes", "users", primary_key: "account"
 end

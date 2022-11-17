@@ -1,7 +1,7 @@
 class CreateProposals < ActiveRecord::Migration[7.0]
   def change
     create_table(:proposals, id: :uuid) do |t|
-      t.references :user, type: :string, limit: 40, null: false, foreign_key: { to_table: :users, primary_key: :account }
+      t.references :user, type: :uuid
       t.text :content, null: false
       t.numeric :snapshot_id, precision: 78, null: false
       t.references :listing, type: :uuid
