@@ -25,6 +25,7 @@ gem "net-http"
 gem 'faye-websocket'
 gem 'eventmachine'
 gem "eth"
+gem "aws-sdk-s3"
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

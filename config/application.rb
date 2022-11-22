@@ -6,7 +6,7 @@ require "rails/all"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-module DBayServer
+module DimplServer
   class Application < Rails::Application
     config.load_defaults 7.0 
     config.time_zone = "Asia/Seoul"
@@ -28,5 +28,10 @@ module DBayServer
       g.orm :active_record, primary_key_type: :uuid
     end
     config.api_only = true
+    config.after_initialize do
+      Thread.new {
+        KlaytnSocket::Listener.call
+      }
+    end
   end
 end

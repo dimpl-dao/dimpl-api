@@ -43,6 +43,21 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_16_054359) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "bids", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.decimal "hash_id", precision: 78
+    t.decimal "deposit", precision: 78, null: false
+    t.decimal "created_block", precision: 39, null: false
+    t.uuid "user_id"
+    t.bigint "listing_id"
+    t.integer "status", limit: 2, default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["listing_id"], name: "index_bids_on_listing_id"
+    t.index ["user_id"], name: "index_bids_on_user_id"
+    t.check_constraint "created_block >= 0::numeric", name: "bids_created_block_unsigned_constraint"
+    t.check_constraint "deposit >= 0::numeric", name: "bids_deposit_unsigned_constraint"
+  end
+
   create_table "comments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "content"
     t.string "commentable_type"
@@ -67,23 +82,23 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_16_054359) do
   end
 
   create_table "listings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.decimal "hash", precision: 78
+    t.decimal "hash_id", precision: 78
     t.string "title"
     t.string "description"
     t.decimal "price", precision: 78, null: false
     t.decimal "deposit", precision: 78, null: false
-    t.decimal "bid_selected_block", precision: 39
+    t.decimal "bid_selected_block", precision: 39, default: "0", null: false
     t.decimal "remonstrable_block_interval", precision: 39, null: false
     t.uuid "user_id"
     t.integer "status", limit: 2, default: 0, null: false
     t.integer "likes_count", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "purchase_attempt_id"
-    t.index ["purchase_attempt_id"], name: "index_listings_on_purchase_attempt_id"
+    t.uuid "bid_id"
+    t.index ["bid_id"], name: "index_listings_on_bid_id"
     t.index ["user_id"], name: "index_listings_on_user_id"
-    t.check_constraint "deposit > 0::numeric", name: "listings_deposit_unsigned_constraint"
-    t.check_constraint "price > 0::numeric", name: "listings_price_unsigned_constraint"
+    t.check_constraint "deposit >= 0::numeric", name: "listings_deposit_unsigned_constraint"
+    t.check_constraint "price >= 0::numeric", name: "listings_price_unsigned_constraint"
   end
 
   create_table "proposals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -104,21 +119,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_16_054359) do
     t.check_constraint "created_block >= 0::numeric", name: "proposals_created_block_unsigned_constraint"
     t.check_constraint "for_votes >= 0::numeric", name: "proposals_for_votes_unsigned_constraint"
     t.check_constraint "snapshot_id >= 0::numeric", name: "proposals_snapshot_id_unsigned_constraint"
-  end
-
-  create_table "purchase_attempts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.decimal "hash", precision: 78
-    t.decimal "deposit", precision: 78, null: false
-    t.decimal "created_block", precision: 39, null: false
-    t.uuid "user_id"
-    t.bigint "listing_id"
-    t.integer "status", limit: 2, default: 0, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["listing_id"], name: "index_purchase_attempts_on_listing_id"
-    t.index ["user_id"], name: "index_purchase_attempts_on_user_id"
-    t.check_constraint "created_block >= 0::numeric", name: "purchase_attempts_created_block_unsigned_constraint"
-    t.check_constraint "deposit > 0::numeric", name: "purchase_attempts_deposit_unsigned_constraint"
   end
 
   create_table "rebuttals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

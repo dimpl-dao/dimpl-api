@@ -19,7 +19,8 @@ module V1
         namespace do
             mount UserApi
             mount ListingApi
-            mount PurchaseAttemptApi
+            mount BidApi
+            mount FileApi
 
             get :ping do
     

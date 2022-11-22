@@ -1,2 +1,0 @@
-class PurchaseAttempt < ApplicationRecord
-end
