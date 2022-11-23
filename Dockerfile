@@ -24,4 +24,4 @@ RUN chmod -R 755 $RAILS_ROOT/bin
 
 EXPOSE 80
 
-CMD bundle exec puma -p 80
+CMD RAILS_ENV=production bundle exec puma -p 80
