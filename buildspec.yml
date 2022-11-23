@@ -1,0 +1,28 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+       docker: 20
+    commands:
+      - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      - unzip awscliv2.zip
+      - ./aws/install
+  pre_build:
+    commands:
+      - echo logging to ecr
+      - $(aws ecr get-login --no-include-email --region ap-northeast-2)
+  build:
+    commands:
+      - echo starting build on 'date'
+      - cd ./
+      - docker build -t dimple-backend .
+      - docker tag dimple-backend:latest 880835873002.dkr.ecr.ap-northeast-2.amazonaws.com/dimpl-backend:latest
+  post_build:
+    commands:
+      - echo build completed on 'date'
+      - echo pushing to repo
+      - docker push 880835873002.dkr.ecr.ap-northeast-2.amazonaws.com/dimpl-backend:latest
+      - echo Writing definitions file...
+      - printf '[{"name":"dimpl-backend","imageUri":"%s"}]' 880835873002.dkr.ecr.ap-northeast-2.amazonaws.com/dimpl-backend:latest > DimplBackendTaskDefinition.json
+artifacts:
+  files: DimplBackendTaskDefinition.json

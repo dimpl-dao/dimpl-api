@@ -11,7 +11,8 @@ WORKDIR /rails-app
 
 COPY Gemfile* ./
 COPY Rakefile ./
-RUN gem install bundler
+RUN gem update --system --no-document && \
+    gem install -N bundler
 RUN bundle config set path 'vendor/bundle'
 
 RUN bundle install
@@ -21,6 +22,6 @@ VOLUME /rails-app
 
 RUN chmod -R 755 $RAILS_ROOT/bin
 
-EXPOSE 3000
+EXPOSE 80
 
-CMD bundle exec puma -p 3000
+CMD bundle exec puma -p 80
