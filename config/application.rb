@@ -11,7 +11,6 @@ module DimplServer
     config.load_defaults 7.0 
     config.time_zone = "Asia/Seoul"
     config.api_only = true
-    # config.web_console.whiny_requests = false
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'
