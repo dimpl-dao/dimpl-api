@@ -23,6 +23,7 @@ module DimplServer
       YAML.load(File.open(env_file)).each do |key, value|
         ENV[key.to_s] = value.to_s
       end if File.exists?(env_file)
+      pp ENV; nil
     end
     config.generators do |g|
       g.orm :active_record, primary_key_type: :uuid
