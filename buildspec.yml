@@ -6,7 +6,7 @@ phases:
   pre_build:
     commands:
       - echo logging to ecr
-      - $(aws ecr get-login --no-include-email --region ap-northeast-2)
+      - $(aws ecr get-login-password | docker login --username AWS --password-stdin 880835873002.dkr.ecr.ap-northeast-2.amazonaws.com/dimpl-backend)
   build:
     commands:
       - echo starting build on 'date'
