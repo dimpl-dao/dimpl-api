@@ -1,6 +1,6 @@
 module KlaytnSocket
     module Escrow
-        CONTRACT_ADDRESS = ESCROW_ADDRESS
+        CONTRACT_ADDRESS = "0x3469BB90b5280e7AC2BCA66C3761f8d98F6503b2"
         class Commiter < ApplicationService
             def initialize(event)
                 @event = event

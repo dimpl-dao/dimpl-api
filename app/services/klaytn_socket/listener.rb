@@ -8,7 +8,7 @@ module KlaytnSocket
 
         def call
           EM.run{
-            @ws = Faye::WebSocket::Client.new(ENV["KAS_WEB_SOCKET_ADDRESS"], [], tls: {
+            @ws = Faye::WebSocket::Client.new("wss://public-node-api.klaytnapi.com/v1/baobab/ws", [], tls: {
               verify_peer: false
             })
             @ws.on :open do |event|
