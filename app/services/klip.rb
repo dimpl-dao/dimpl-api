@@ -1,4 +1,4 @@
-module KlipApiHelper
+module Klip
     extend self
 
     @klip_api_root = 'https://a2a-api.klipwallet.com/'
