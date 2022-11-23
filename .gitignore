@@ -7,6 +7,8 @@
 /config/keys
 **/env.yml
 **/env.development.yml
+**/.env
+**/.env.development
 buildspec.yml
 .DS_Store
 

@@ -19,10 +19,8 @@ module DimplServer
       end
     end
     config.before_configuration do
-      env_file = File.join(Rails.root, 'config', Rails.env.development? ? 'env.development.yml' : 'env.yml')
-      YAML.load(File.open(env_file)).each do |key, value|
-        ENV[key.to_s] = value.to_s
-      end if File.exists?(env_file)
+      env_file = File.join(Rails.root, 'config', '.env')
+      Dotenv.overload(env_file) if File.exists?(env_file)
       pp ENV; nil
     end
     config.generators do |g|
