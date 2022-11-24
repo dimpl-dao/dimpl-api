@@ -20,7 +20,6 @@ module DimplServer
     config.before_configuration do
       env_file = File.join(Rails.root, 'config', '.env')
       Dotenv.overload(env_file) if File.exists?(env_file)
-      pp ENV; nil
     end
     config.generators do |g|
       g.orm :active_record, primary_key_type: :uuid
