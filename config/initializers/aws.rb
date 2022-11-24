@@ -9,4 +9,4 @@ unless File.exists?(private_key_file)
   object = bucket.object('private_key.pem')
   object.download_file(private_key_file)
 end
-RSA_PRIVATE = OpenSSL::PKey::RSA.new File.read(path)
+RSA_PRIVATE = OpenSSL::PKey::RSA.new File.read(private_key_file)
