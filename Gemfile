@@ -25,7 +25,6 @@ gem "net-http"
 gem 'faye-websocket'
 gem 'eventmachine'
 gem "eth"
-gem "aws-sdk-s3"
 gem "dotenv"
 
 group :development, :test do
