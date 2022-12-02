@@ -10,6 +10,7 @@ module DimplServer
   class Application < Rails::Application
     config.load_defaults 7.0 
     config.time_zone = "Asia/Seoul"
+    config.web_console.permissions = '10.0.2.2'
     config.api_only = true
     config.middleware.insert_before 0, Rack::Cors do
       allow do
@@ -20,6 +21,7 @@ module DimplServer
     config.before_configuration do
       env_file = File.join(Rails.root, 'config', '.env')
       Dotenv.overload(env_file) if File.exists?(env_file)
+      pp ENV
     end
     config.generators do |g|
       g.orm :active_record, primary_key_type: :uuid

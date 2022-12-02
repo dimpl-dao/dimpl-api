@@ -6,7 +6,7 @@ Aws.config.update({
 private_key_file = Rails.root.join("config", "keys", "private_key.pem")
 unless File.exists?(private_key_file)
   bucket = Aws::S3::Bucket.new('dimpl-keys')
-  object = bucket.object('private_key.pem')
+  object = bucket.object('backend/private_key.pem')
   object.download_file(private_key_file)
 end
 RSA_PRIVATE = OpenSSL::PKey::RSA.new File.read(private_key_file)
