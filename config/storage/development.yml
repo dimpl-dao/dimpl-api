@@ -2,6 +2,6 @@ amazon:
   service: S3
   access_key_id: <%= ENV['STORAGE_ACCESS_KEY_ID'] %>
   secret_access_key: <%= ENV['STORAGE_SECRET_ACCESS_KEY'] %>
-  region: <%= ENV['AWS_REGION'] %>
+  region: <%= ENV['STORAGE_AWS_REGION'] %>
   bucket: <%= ENV['STORAGE_BUCKET'] %>
 cdn_host: <%= ENV['STORAGE_CDN_HOST'] %>
