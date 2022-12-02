@@ -4,7 +4,8 @@ class CreateRebuttals < ActiveRecord::Migration[7.0]
       t.references :user, type: :uuid
       t.text :content, null: false
       t.references :proposal, type: :uuid
-      t.timestamps
+      t.datetime :created_at, precision: 0, null: false
+      t.datetime :updated_at, precision: 0, null: false
     end
   end
 end

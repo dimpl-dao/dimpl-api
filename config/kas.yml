@@ -1,0 +1,12 @@
+production:
+  access_key_id: <%= ENV['KAS_ACCESS_KEY_ID'] %>
+  secret_access_key: <%= ENV['KAS_SECRET_ACCESS_KEY'] %>
+  authorization: <%= ENV['KAS_AUTHORIZATION'] %>
+  admin_address: <%= ENV['KAS_ADMIN_ADDRESS'] %>
+  default_gas_price: 250000000000
+development:
+  access_key_id: "<%= ENV['KAS_ACCESS_KEY_ID'] %>"
+  secret_access_key: "<%= ENV['KAS_SECRET_ACCESS_KEY'] %>"
+  authorization: "<%= ENV['KAS_AUTHORIZATION'] %>"
+  admin_address: "<%= ENV['KAS_ADMIN_ADDRESS'] %>"
+  default_gas_price: 250000000000

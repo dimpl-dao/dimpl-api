@@ -5,7 +5,9 @@ class CreateUsers < ActiveRecord::Migration[7.0]
       t.string :klaytn_address, limit: 40, unique: true
       t.index :klaytn_address
       t.string :username
-      t.timestamps 
+      t.string :image_uri
+      t.datetime :created_at, precision: 0, null: false
+      t.datetime :updated_at, precision: 0, null: false
     end
   end
 end

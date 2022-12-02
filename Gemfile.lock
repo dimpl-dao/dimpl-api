@@ -317,6 +317,7 @@ DEPENDENCIES
   jbuilder (~> 2.7)
   jwt
   kaminari
+  keccak (~> 1.3)
   listen (~> 3.3)
   mini_magick
   net-http

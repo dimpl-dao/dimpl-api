@@ -11,7 +11,8 @@ class CreateListings < ActiveRecord::Migration[7.0]
       t.references :user, type: :uuid
       t.integer :status, limit: 1, null: false, default: 0
       t.integer :likes_count, default: 0
-      t.timestamps
+      t.datetime :created_at, precision: 0, null: false
+      t.datetime :updated_at, precision: 0, null: false
     end
     add_check_constraint :listings, "price >= 0", name: 'listings_price_unsigned_constraint'
     add_check_constraint :listings, "deposit >= 0", name: 'listings_deposit_unsigned_constraint'

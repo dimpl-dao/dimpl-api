@@ -12,6 +12,7 @@ module V1
             end
             post do
                 authenticate!
+                error!('At least 1 image is required', 400) if params[:images].length == 0
                 error!('Only up to 10 images can be uploaded', 400) if params[:images].length > 10
                 listing = Listing.create!(
                     title: params[:title], 
@@ -29,7 +30,32 @@ module V1
                     success: true,
                     listing: listing.as_json({
                         methods: [
+                            :user,
                             :image_uris
+                        ]
+                    }),
+                }
+            end
+
+            params do
+                requires :id, type: String
+                requires :status, type: Integer, values: [1]
+            end
+            patch do
+                authenticate!
+                listing = Listing.find(params[:id])
+                error!('Not owner of listing', 400) unless current_user.id == listing.user_id
+                error!('Not Found', 404) if Escrow::ListingStatusChecker.call(listing)
+                listing.status = params[:status]
+                listing.save
+                return {
+                    success: true,
+                    listing: listing.as_json({
+                        methods: [
+                            :user,
+                            :image_uris,
+                            :hash_id_string,
+                            :paid_bids
                         ]
                     }),
                 }
@@ -48,8 +74,14 @@ module V1
                 return {
                     success: true,
                     listing: listing.as_json({
+                        include: [
+                            :user
+                        ],
                         methods: [
-                            :image_uris
+                            :user,
+                            :image_uris,
+                            :hash_id_string,
+                            :paid_bids
                         ]
                     }),
                 }
@@ -58,7 +90,7 @@ module V1
             get :abi do
                 return {
                     success: true,
-                    contract_address: KlaytnSocket::Escrow::CONTRACT_ADDRESS,
+                    contract_address: Escrow::CONTRACT_ADDRESS,
                     create: ABI::DIMPL_ESCROW[:"list(uint256,uint128,uint128)"],
                 }
             end
@@ -82,7 +114,7 @@ module V1
                 optional :cursor, type: String
             end
             get :feed do
-                feed = Feed::ListingGetter.call({}, {limit: params[:limit], cursor: params[:cursor]})
+                feed = Feed::ListingGetter.call({status: Listing::Status::PAID}, {limit: params[:limit], cursor: params[:cursor]})
                 return {
                     success: true,
                     listings: feed[:listings],
@@ -92,7 +124,7 @@ module V1
 
             params do
                 requires :status, type: Integer, values: [Listing::Status::CREATED, Listing::Status::PAID, Listing::Status::LOCKED, Listing::Status::COMPLETED]
-                optional :limit, type: Integer, values: { proc: ->(v) { v.positive? && v <= 30 } }, default: 20
+                optional :limit, type: Integer, values: { proc: ->(v) { v.positive? && v <= 30 } }, default: 15
                 optional :cursor, type: String
                 optional :klaytn_address, type: String, regexp: /^[a-f0-9]{40}$/
             end

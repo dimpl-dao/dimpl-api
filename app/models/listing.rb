@@ -1,11 +1,24 @@
 class Listing < ApplicationRecord
+    belongs_to :user
+    has_many :bids
     has_many_attached :images
 
     module Status
         CREATED = 0
         PAID = 1
-        LOCKED = 2
+        TRANSACTING = 2
         COMPLETED = 3
+        LOCKED = 4
+    end
+
+    def hash_id_string
+        hash_id.to_s
+    end
+
+    def paid_bids
+        bids.where(status: Bid::Status::PAID).as_json({
+            methods: [:user]
+        })
     end
 
     def image_uris

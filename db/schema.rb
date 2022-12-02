@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_16_054359) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_01_151851) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -46,12 +46,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_16_054359) do
   create_table "bids", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.decimal "hash_id", precision: 78
     t.decimal "deposit", precision: 78, null: false
-    t.decimal "created_block", precision: 39, null: false
+    t.decimal "created_block", precision: 39
     t.uuid "user_id"
-    t.bigint "listing_id"
+    t.uuid "listing_id"
+    t.string "description"
     t.integer "status", limit: 2, default: 0, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 0, null: false
+    t.datetime "updated_at", precision: 0, null: false
+    t.uuid "delivery_address_id"
+    t.index ["delivery_address_id"], name: "index_bids_on_delivery_address_id"
     t.index ["listing_id"], name: "index_bids_on_listing_id"
     t.index ["user_id"], name: "index_bids_on_user_id"
     t.check_constraint "created_block >= 0::numeric", name: "bids_created_block_unsigned_constraint"
@@ -65,18 +68,30 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_16_054359) do
     t.integer "comments_count", default: 0
     t.integer "likes_count", default: 0
     t.uuid "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 0, null: false
+    t.datetime "updated_at", precision: 0, null: false
     t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "delivery_addresses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "address_ko"
+    t.string "address_en"
+    t.string "zonecode", null: false
+    t.string "specifics"
+    t.string "name"
+    t.boolean "main", default: false, null: false
+    t.uuid "user_id"
+    t.datetime "created_at", precision: 0, null: false
+    t.index ["user_id"], name: "index_delivery_addresses_on_user_id"
   end
 
   create_table "likes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "likable_type"
     t.uuid "likable_id"
     t.uuid "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 0, null: false
+    t.datetime "updated_at", precision: 0, null: false
     t.index ["likable_type", "likable_id"], name: "index_likes_on_likable"
     t.index ["user_id"], name: "index_likes_on_user_id"
   end
@@ -92,8 +107,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_16_054359) do
     t.uuid "user_id"
     t.integer "status", limit: 2, default: 0, null: false
     t.integer "likes_count", default: 0
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 0, null: false
+    t.datetime "updated_at", precision: 0, null: false
     t.uuid "bid_id"
     t.index ["bid_id"], name: "index_listings_on_bid_id"
     t.index ["user_id"], name: "index_listings_on_user_id"
@@ -111,8 +126,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_16_054359) do
     t.decimal "created_block", precision: 39, null: false
     t.integer "comments_count", default: 0
     t.boolean "executed", default: false, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 0, null: false
+    t.datetime "updated_at", precision: 0, null: false
     t.index ["listing_id"], name: "index_proposals_on_listing_id"
     t.index ["user_id"], name: "index_proposals_on_user_id"
     t.check_constraint "against_votes >= 0::numeric", name: "proposals_against_votes_unsigned_constraint"
@@ -125,8 +140,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_16_054359) do
     t.uuid "user_id"
     t.text "content", null: false
     t.uuid "proposal_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 0, null: false
+    t.datetime "updated_at", precision: 0, null: false
     t.index ["proposal_id"], name: "index_rebuttals_on_proposal_id"
     t.index ["user_id"], name: "index_rebuttals_on_user_id"
   end
@@ -134,8 +149,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_16_054359) do
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "klaytn_address", limit: 40
     t.string "username"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string "image_uri"
+    t.datetime "created_at", precision: 0, null: false
+    t.datetime "updated_at", precision: 0, null: false
     t.index ["klaytn_address"], name: "index_users_on_klaytn_address"
   end
 
@@ -143,8 +159,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_16_054359) do
     t.uuid "proposal_id"
     t.integer "vote_type", limit: 2, null: false
     t.uuid "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 0, null: false
+    t.datetime "updated_at", precision: 0, null: false
     t.index ["proposal_id"], name: "index_votes_on_proposal_id"
     t.index ["user_id"], name: "index_votes_on_user_id"
     t.check_constraint "vote_type >= 0 AND vote_type <= 1", name: "votes_vote_type_constraint"

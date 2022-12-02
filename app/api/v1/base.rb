@@ -21,6 +21,7 @@ module V1
             mount ListingApi
             mount BidApi
             mount FileApi
+            mount DeliveryAddressApi
 
             get :ping do
     

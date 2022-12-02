@@ -3,7 +3,8 @@ class CreateLikes < ActiveRecord::Migration[7.0]
     create_table(:likes, id: :uuid) do |t|
       t.references :likable, type: :uuid, polymorphic: true
       t.references :user, type: :uuid
-      t.timestamps
+      t.datetime :created_at, precision: 0, null: false
+      t.datetime :updated_at, precision: 0, null: false
     end
   end
 end

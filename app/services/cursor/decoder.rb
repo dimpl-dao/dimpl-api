@@ -9,13 +9,8 @@ module Cursor
             return {} unless @cursor
             decode
             check_params
-            where = "WHERE #{@order_by} #{@desc ? "<" : ">"} #{@decoded_cursor[:last_value]}
-            OR (#{@order_by} = #{@decoded_cursor[:last_value]} AND id #{@desc ? "<" : ">"} #{@decoded_cursor[:last_id]})"
-            order = "ORDER BY #{@order_by} #{@desc ? "DESC" : "ASC"}, id #{@desc ? "DESC" : "ASC"}"
-            return {
-                where: where,
-                order: order
-            }
+            where = "date_trunc('second', #{@order_by}) #{@desc ? "<" : ">"} to_timestamp(#{@decoded_cursor[:last_value]}) OR (date_trunc('second', #{@order_by}) = to_timestamp(#{@decoded_cursor[:last_value]}) AND id #{@desc ? "<" : ">"} '#{@decoded_cursor[:last_id]}')"
+            return where
         end
         def decode
             @decoded_cursor = Jwt::Decoder.call("eyJhbGciOiJSUzI1NiJ9.#{@cursor}", false)

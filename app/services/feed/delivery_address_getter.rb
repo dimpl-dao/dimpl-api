@@ -1,5 +1,5 @@
 module Feed
-    class ListingGetter < ApplicationService
+    class DeliveryAddressGetter < ApplicationService
         class_attribute :order_by
         class_attribute :desc
         self.order_by = 'created_at'
@@ -12,16 +12,11 @@ module Feed
         def call
             get_cursor_predicate
             get_limit
-            get_listings
+            get_delivery_addresses
             encode_cursor
             return {
                 cursor: @cursor,
-                listings: @listings.as_json({
-                    methods: [
-                        :image_uri,
-                        :hash_id_string
-                    ]
-                })
+                delivery_addresses: @delivery_addresses.as_json
             }
         end
         def get_cursor_predicate
@@ -30,20 +25,19 @@ module Feed
         def get_limit
             @limit = @params[:limit]
         end
-        def get_listings
-            @listings = (Listing
+        def get_delivery_addresses
+            @delivery_addresses = (DeliveryAddress
                 .where(@predicate)
                 .where(@cursor_predicate)
                 .order("#{self.order_by} #{self.desc ? "DESC" : "ASC"}")
-                .limit(@limit)
-                .with_attached_images)
+                .limit(@limit))
         end
         def encode_cursor
             @cursor = nil
-            return unless @listings.last
+            return unless @delivery_addresses.last
             cursor = {
-                last_value: @listings.last.created_at.to_i,
-                last_id: @listings.last.id
+                last_value: @delivery_addresses.last.created_at.to_i,
+                last_id: @delivery_addresses.last.id
             }
             @cursor = Cursor::Encoder.call(cursor)
         end

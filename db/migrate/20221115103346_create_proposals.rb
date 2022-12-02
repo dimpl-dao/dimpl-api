@@ -10,7 +10,8 @@ class CreateProposals < ActiveRecord::Migration[7.0]
       t.numeric :created_block, precision: 39, scale: 0, null: false
       t.integer :comments_count, default: 0
       t.boolean :executed, null: false, default: false
-      t.timestamps
+      t.datetime :created_at, precision: 0, null: false
+      t.datetime :updated_at, precision: 0, null: false
     end
 
     add_check_constraint :proposals, "snapshot_id >= 0", name: 'proposals_snapshot_id_unsigned_constraint'

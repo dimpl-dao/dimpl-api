@@ -16,7 +16,6 @@ module V1
                 authenticate!
                 key = "image/#{params[:attached_record]}/"
                 file = ImagePresignedUrlCreator.call(params, {key: key})
-                p file
 
                 return {
                     success: true,
