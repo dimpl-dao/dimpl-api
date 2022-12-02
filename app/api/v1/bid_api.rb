@@ -17,6 +17,10 @@ module V1
                     user_id: current_user.id,
                     status: Bid::Status::CREATED
                 )
+                hash_id = Hasher::Bid.call(bid)
+                bid.hash_id = hash_id
+                bid.save
+
                 return {
                     success: true,
                     bid: bid
@@ -28,6 +32,7 @@ module V1
                     success: true,
                     contract_address: Escrow::CONTRACT_ADDRESS,
                     create: ABI::DIMPL_ESCROW[:"bid(uint256,uint128)"],
+                    select: ABI::DIMPL_ESCROW[:"selectBid(uint256,uint256)"],
                 }
             end
 

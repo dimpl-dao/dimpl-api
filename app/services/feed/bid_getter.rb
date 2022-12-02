@@ -17,7 +17,7 @@ module Feed
             return {
                 cursor: @cursor,
                 bids: @bids.as_json({
-                    include: [
+                    methods: [
                         :listing,
                         :user,
                         :delivery_address

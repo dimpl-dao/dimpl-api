@@ -1,6 +1,7 @@
 class Listing < ApplicationRecord
     belongs_to :user
-    has_many :bids
+    has_many :bids, dependent: :destroy
+    belongs_to :bid, required: false
     has_many_attached :images
 
     module Status
@@ -17,7 +18,7 @@ class Listing < ApplicationRecord
 
     def paid_bids
         bids.where(status: Bid::Status::PAID).as_json({
-            methods: [:user]
+            methods: [:user, :hash_id_string]
         })
     end
 

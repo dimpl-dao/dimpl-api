@@ -6,4 +6,7 @@ class Bid < ApplicationRecord
         CREATED = 0
         PAID = 1
     end
+    def hash_id_string
+        hash_id.to_s
+    end
 end

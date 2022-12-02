@@ -9,6 +9,8 @@ module Escrow
                 ListingCreatedHandler.call(@event)
             when ABI::DIMPL_ESCROW[:"BidCreated(uint256,address,uint256,uint256,uint128,uint128)"][:topic]
                 BidCreatedHandler.call(@event)
+            when ABI::DIMPL_ESCROW[:"BidSelected(uint256)"][:topic]
+                BidSelectedHandler.call(@event)
             end
         end
     end

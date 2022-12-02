@@ -26,7 +26,6 @@ module KlaytnSocket
             @ws.on :message do |event|
               begin
                 result = JSON.parse(event.data).with_indifferent_access[:params][:result].with_indifferent_access
-                p result
                 case result[:address] 
                 when Escrow::CONTRACT_ADDRESS
                   Escrow::Commiter.call(result)

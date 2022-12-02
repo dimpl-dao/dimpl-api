@@ -23,9 +23,12 @@ module V1
                     user_id: current_user.id,
                     status: Listing::Status::CREATED
                 )
+                hash_id = Hasher::Listing.call(listing)
+                listing.hash_id = hash_id
                 params[:images].each do |image|
                     listing.images.attach(image)
                 end
+                listing.save
                 return {
                     success: true,
                     listing: listing.as_json({
@@ -39,15 +42,19 @@ module V1
 
             params do
                 requires :id, type: String
-                requires :status, type: Integer, values: [1]
+                optional :status, type: Integer, values: [1]
+                optional :bid_id, type: String
             end
             patch do
                 authenticate!
                 listing = Listing.find(params[:id])
                 error!('Not owner of listing', 400) unless current_user.id == listing.user_id
-                error!('Not Found', 404) if Escrow::ListingStatusChecker.call(listing)
-                listing.status = params[:status]
-                listing.save
+                (locked, address, deposit, price, bid_hash_id, bid_selected_block, remonstrable_block_interval) = Escrow::ListingChecker.call(listing)
+                if params[:status]
+                    error!('Not paid yet', 404) unless address.to_i(16) > 0
+                    listing.status = params[:status]
+                    listing.save
+                end
                 return {
                     success: true,
                     listing: listing.as_json({

@@ -24,7 +24,7 @@ module V1
                     Kaikas::ResultGetter.call(params[:request_key])
                 end
                 if result && result[:klaytn_address].downcase == klaytn_address
-                    user = User.find_or_create_by!(klaytn_address: klaytn_address[2..-1])
+                    user = Auth::UserCreateOrGetter.call(klaytn_address)
                     jwt = Auth::JwtCreator.call(user)
                     return {
                         success: true,
