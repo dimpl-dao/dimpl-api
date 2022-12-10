@@ -17,9 +17,6 @@ module V1
                     user_id: current_user.id,
                     status: Bid::Status::CREATED
                 )
-                hash_id = Hasher::Bid.call(bid)
-                bid.hash_id = hash_id
-                bid.save
 
                 return {
                     success: true,

@@ -4,6 +4,13 @@ class Listing < ApplicationRecord
     belongs_to :bid, required: false
     has_many_attached :images
 
+    after_create do |listing|
+        unless listing.hash_id
+            listing.hash_id = Hasher::Listing.call(listing)
+            listing.save
+        end
+    end
+
     module Status
         CREATED = 0
         PAID = 1

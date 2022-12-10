@@ -23,12 +23,9 @@ module V1
                     user_id: current_user.id,
                     status: Listing::Status::CREATED
                 )
-                hash_id = Hasher::Listing.call(listing)
-                listing.hash_id = hash_id
                 params[:images].each do |image|
                     listing.images.attach(image)
                 end
-                listing.save
                 return {
                     success: true,
                     listing: listing.as_json({

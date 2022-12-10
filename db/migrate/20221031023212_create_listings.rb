@@ -2,6 +2,7 @@ class CreateListings < ActiveRecord::Migration[7.0]
   def change
     create_table(:listings, id: :uuid) do |t|
       t.numeric :hash_id, precision: 78, scale: 0, unique: true
+      t.index :hash_id, unique: true
       t.string :title
       t.string :description
       t.numeric :price, precision: 78, scale: 0, null: false
@@ -10,7 +11,6 @@ class CreateListings < ActiveRecord::Migration[7.0]
       t.numeric :remonstrable_block_interval, precision: 39, scale: 0, null: false
       t.references :user, type: :uuid
       t.integer :status, limit: 1, null: false, default: 0
-      t.integer :likes_count, default: 0
       t.datetime :created_at, precision: 0, null: false
       t.datetime :updated_at, precision: 0, null: false
     end

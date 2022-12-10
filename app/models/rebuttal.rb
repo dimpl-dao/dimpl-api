@@ -1,2 +1,0 @@
-class Rebuttal < ApplicationRecord
-end

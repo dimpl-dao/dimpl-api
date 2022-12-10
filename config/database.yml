@@ -18,7 +18,14 @@ development:
   <<: *default
 
 test:
-  <<: *default
+  adapter: postgresql
+  encoding: utf8
+  pool: <%= ENV['RAILS_MAX_THREADS'] %>
+  username: <%= ENV['DB_USERNAME'] %>
+  password: <%= ENV['DB_PASSWORD'] %>
+  port: <%= ENV['DB_PORT'] %>
+  host: <%= ENV['DB_HOST'] %>
+  database: dimplTestDB
 
 production:
   <<: *default

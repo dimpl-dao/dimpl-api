@@ -11,6 +11,7 @@ module DimplServer
     config.load_defaults 7.0 
     config.time_zone = "Asia/Seoul"
     config.api_only = true
+    config.active_record.verify_foreign_keys_for_fixtures = false
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'
@@ -20,7 +21,6 @@ module DimplServer
     config.before_configuration do
       env_file = File.join(Rails.root, 'config', '.env')
       Dotenv.overload(env_file) if File.exists?(env_file)
-      pp ENV
     end
     config.generators do |g|
       g.orm :active_record, primary_key_type: :uuid

@@ -2,6 +2,7 @@ class CreateBids < ActiveRecord::Migration[7.0]
   def change
     create_table(:bids, id: :uuid) do |t|
       t.numeric :hash_id, precision: 78, scale: 0, unique: true
+      t.index :hash_id, unique: true
       t.numeric :deposit, precision: 78, null: false
       t.numeric :created_block, precision: 39, scale: 0
       t.references :user, type: :uuid
